@@ -151,11 +151,11 @@
         'name': 'punctuation.definition.keyword.xle'
     'contentName': 'meta.function.xle'
     'patterns': [
-      #{'include': '#f-structure-definition'}
+      #{'include': '#f-structure-section'}
       {'include': '#body'}
     ]
 
-  'f-structure-definition':
+  'f-structure-section':
 
     'begin': '(\\w+)\\*?(:)'
     'end': '(;)|(\\.)|(\\|)\\s+\\w+:'
@@ -176,6 +176,38 @@
       {'include': '#regex'}
     ]
 
+  'f-structure-definitions':
+
+    'patterns': [
+      {
+        'match': '[!^$]'
+        'name': 'storage.type.xle'
+      }
+      {
+        'match': '(\\()\\s*([!^]).+?(\\))'
+        'captures':
+          '1':
+            'name': 'punctuation.definition.xle'
+          '2':
+            'name': 'storage.type.xle'
+          '3':
+            'name': 'punctuation.definition.xle'
+        'patterns': [
+          {'include': '#regex'}
+        ]
+      }
+      {
+        'match': '(\\^)\\s*(=)\\s*(!)'
+        'captures':
+          '1':
+            'name': 'storage.type.xle'
+          '2':
+            'name': 'punctuation.definition.xle'
+          '3':
+            'name': 'storage.type.xle'
+      }
+    ]
+
   'section_template':
 
     'begin': '(\\w+\\s+\\w+\\s+TEMPLATES\\s+\\(\\d+\.\\d+\\))'
@@ -194,7 +226,7 @@
 
   'template_declaration':
 
-      'begin': '(.*)\\s+?(=)'
+      'begin': '(.+?)\\s+?(=)'
       'end': '(\\.)'
       'beginCaptures':
         '1':
@@ -239,7 +271,7 @@
 
   'lexicon_entry':
 
-    'begin': '(.+)?\\s+(.+)\\s+(?:(\\*)|(XLE))'
+    'begin': '([^\\s]+)?\\s+([^\\s]+)\\s+(?:(\\*)|(XLE))'
     'end': '(\\.|;)'
     'beginCaptures':
       '1':
@@ -259,14 +291,27 @@
       {'include': '#body'}
     ]
 
+  'subcat':
+
+    'match': '(<).*?(>)'
+    'captures':
+      '1':
+        'name': 'punctuation.definition.keyword.xle'
+      '2':
+        'name': 'punctuation.definition.keyword.xle'
+    'patterns': [
+      {'include': '#body'}
+    ]
+
   'regex':
 
     'patterns': [
       {'include': '#kleene_star'}
       {'include': '#disjunction'}
       {'include': '#optionality'}
+      {'include': '#negation_scope'}
       {'include': '#negation'}
-      {'include': '#regex'}
+      {'include': '#body'}
       ]
 
   'kleene_star':
@@ -309,6 +354,11 @@
 
   'negation':
 
+    'match': '~'
+    'name': 'string.regexp.xle'
+
+  'negation_scope':
+
     'begin': '(~)(\\[)'
     'end': '(\\])'
     'beginCaptures':
@@ -324,10 +374,17 @@
       {'include': '#body'}
     ]
 
+  'stem-definition':
+
+    'match': '%stem'
+    'name': 'variable.language.xle'
+
   'body':
 
     'patterns': [
       {'include': '#regex'}
       {'include': '#template_call'}
       {'include': '#comments'}
+      {'include': '#f-structure-definitions'}
+      {'include': '#subcat'}
     ]
