@@ -27,10 +27,23 @@
         'name': 'punctuation.definition.comment.xle'
     'name': 'comment.block.quoted.xle'
 
+  'comments_morphology':
+
+    'begin': '\\#'
+    'end': '\n'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.definition.comment.xle'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.definition.comment.xle'
+    'name': 'comment.line.number-sign.xle'
+
   'sections':
 
     'patterns': [
       {'include': '#section_config'}
+      {'include': '#section_morphology'}
       {'include': '#section_rule'}
       {'include': '#section_template'}
       {'include': '#section_lexicon'}
@@ -110,6 +123,26 @@
             'name': 'punctuation.definition.keyword.xle'
       }
       {
+        'begin': '(EPSILON)'
+        'end': '(\\.)'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.other.xle'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.keyword.xle'
+      }
+      {
+        'begin': '(SEMANTICFUNCTIONS)'
+        'end': '(\\.)'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.other.xle'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.keyword.xle'
+      }
+      {
         'begin': '(FILES)'
         'end': '(\\.)'
         'beginCaptures':
@@ -119,6 +152,31 @@
           '1':
             'name': 'punctuation.definition.keyword.xle'
       }
+      {
+        'begin': '(OPTIMALITYORDER)'
+        'end': '(\\.)'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.other.xle'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.keyword.xle'
+      }
+    ]
+
+  'section_morphology':
+
+    'begin': '(\\w+\\s+\\w+\\s+MORPHOLOGY\\s+\\(\\d+\.\\d+\\))'
+    'end': '(----)'
+    'beginCaptures':
+      '1':
+        'name': 'entity.name.section.xle'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.definition.keyword.xle'
+    'contentName': 'meta.section.xle'
+    'patterns': [
+      {'include': '#comments_morphology'}
     ]
 
   'section_rule':
@@ -135,6 +193,7 @@
     'patterns': [
       {'include': '#comments'}
       {'include': '#rules'}
+      {'include': '#macro_declaration'}
     ]
 
   'rules':
@@ -184,13 +243,15 @@
         'name': 'storage.type.xle'
       }
       {
-        'match': '(\\()\\s*([!^]).+?(\\))'
+        'match': '(\\()\\s*([!^])[^\\s]+?(\\))(?:\\s*(=)\\s*[^\\s]+?)?'
         'captures':
           '1':
             'name': 'punctuation.definition.xle'
           '2':
             'name': 'storage.type.xle'
           '3':
+            'name': 'punctuation.definition.xle'
+          '4':
             'name': 'punctuation.definition.xle'
         'patterns': [
           {'include': '#regex'}
@@ -207,6 +268,31 @@
             'name': 'storage.type.xle'
       }
     ]
+
+  'macro_declaration':
+
+    'begin': '(.+?)\\s+?(=)'
+    'end': '(\\.)'
+    'beginCaptures':
+      '1':
+        'name': 'variable.other.xle'
+      '2':
+        'name': 'punctuation.definition.keyword.xle'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.definition.keyword.xle'
+    'patterns': [
+      {'include': '#body'}
+    ]
+
+  'macro_call':
+
+    'match': '(@)(.+?)'
+    'captures':
+      '1':
+        'name': 'storage.type.xle'
+      '2':
+        'name': 'variable.parameter.xle'
 
   'section_template':
 
@@ -226,32 +312,35 @@
 
   'template_declaration':
 
-      'begin': '(.+?)\\s+?(=)'
-      'end': '(\\.)'
-      'beginCaptures':
-        '1':
-          'name': 'variable.other.xle'
-        '2':
-          'name': 'punctuation.definition.keyword.xle'
-      'endCaptures':
-        '1':
-          'name': 'punctuation.definition.keyword.xle'
-      'patterns': [
-        {'include': '#body'}
-      ]
+    'begin': '(.+?)\\s+?(=)'
+    'end': '(\\.)'
+    'beginCaptures':
+      '1':
+        'name': 'variable.other.xle'
+      '2':
+        'name': 'punctuation.definition.keyword.xle'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.definition.keyword.xle'
+    'patterns': [
+      {'include': '#body'}
+    ]
 
   'template_call':
 
-    'match': '(@)(\\()(.*?)(\\))'
-    'captures':
+    'begin': '(@)(\\().+?'
+    'end': '(\\))'
+    'beginCaptures':
       '1':
         'name': 'storage.type.xle'
       '2':
         'name': 'punctuation.definition.xle'
-      '3':
-        'name': 'variable.parameter.xle'
-      '4':
+    'endCaptures':
+      '1':
         'name': 'punctuation.definition.xle'
+    'patterns': [
+      {'include': '#stem_definition'}
+    ]
 
   'section_lexicon':
 
@@ -271,7 +360,7 @@
 
   'lexicon_entry':
 
-    'begin': '([^\\s]+)?\\s+([^\\s]+)\\s+(?:(\\*)|(XLE))'
+    'begin': '([^\\s]+)?\\s+([^\\s]+)\\s+(?:(\\*)|((?:XLE|xle)))'
     'end': '(\\.|;)'
     'beginCaptures':
       '1':
@@ -307,8 +396,9 @@
 
     'patterns': [
       {'include': '#kleene_star'}
+      {'include': '#grouping_brackets_square'}
       {'include': '#disjunction'}
-      {'include': '#optionality'}
+      #{'include': '#optionality'}
       {'include': '#negation_scope'}
       {'include': '#negation'}
       {'include': '#body'}
@@ -318,6 +408,20 @@
 
     'match': '\\*'
     'name': 'string.regexp.xle'
+
+  'grouping_brackets_square':
+
+    'begin': '(\\[)'
+    'end': '(\\])'
+    'beginCaptures':
+      '1':
+        'name': 'string.regexp.xle'
+    'endCaptures':
+      '1':
+        'name': 'string.regexp.xle'
+    'patterns': [
+      {'include': '#body'}
+    ]
 
   'disjunction':
 
@@ -374,16 +478,30 @@
       {'include': '#body'}
     ]
 
-  'stem-definition':
+  'xle_keywords':
+
+    'patterns': [
+      {'include': '#stem_definition'}
+      {'include': '#optimality'}
+    ]
+
+  'stem_definition':
 
     'match': '%stem'
+    'name': 'variable.language.xle'
+
+  'optimality':
+
+    'match': 'o::\\*'
     'name': 'variable.language.xle'
 
   'body':
 
     'patterns': [
+      {'include': '#xle_keywords'}
       {'include': '#regex'}
       {'include': '#template_call'}
+      {'include': '#macro_call'}
       {'include': '#comments'}
       {'include': '#f-structure-definitions'}
       {'include': '#subcat'}
