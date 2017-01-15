@@ -1,3 +1,6 @@
+## 0.1.0
+* Release version
+
 ## 0.0.4
 * Resolve bug with rules name
 * Fix bug in config section
