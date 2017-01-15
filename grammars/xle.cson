@@ -1,5 +1,4 @@
-# If this is your first time writing a language grammar, check out:
-#   - http://manual.macromates.com/en/language_grammars
+# http://manual.macromates.com/en/language_grammars
 
 'scopeName': 'source.xle'
 'name': 'xle'
@@ -64,7 +63,7 @@
       {'include': '#comments'}
       {
         'begin': '(ROOTCAT)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -74,7 +73,7 @@
       }
       {
         'begin': '(LEXENTRIES)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -84,7 +83,7 @@
       }
       {
         'begin': '(RULES)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -94,7 +93,7 @@
       }
       {
         'begin': '(GOVERNABLERELATIONS)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -104,7 +103,7 @@
       }
       {
         'begin': '(TEMPLATES)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -114,7 +113,7 @@
       }
       {
         'begin': '(MORPHOLOGY)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -124,7 +123,7 @@
       }
       {
         'begin': '(EPSILON)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -134,7 +133,7 @@
       }
       {
         'begin': '(SEMANTICFUNCTIONS)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -144,7 +143,7 @@
       }
       {
         'begin': '(FILES)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -154,7 +153,7 @@
       }
       {
         'begin': '(OPTIMALITYORDER)'
-        'end': '(\\.)'
+        'end': '(\\.)\\s*?\\n'
         'beginCaptures':
           '1':
             'name': 'keyword.other.xle'
@@ -194,11 +193,12 @@
       {'include': '#comments'}
       {'include': '#rules'}
       {'include': '#macro_declaration'}
+      {'include': '#body'}
     ]
 
   'rules':
 
-    'begin': '(\\w+|\\w+\\[.*\\])\\s+(-->)'
+    'begin': '([\\w\']+|[\\w\']+\\[.*\\])\\s+(-->)'
     'end': '(\\.)'
     'beginCaptures':
       '1':
@@ -210,29 +210,22 @@
         'name': 'punctuation.definition.keyword.xle'
     'contentName': 'meta.function.xle'
     'patterns': [
-      #{'include': '#f-structure-section'}
+      {'include': '#f-structure-section'}
       {'include': '#body'}
     ]
 
   'f-structure-section':
 
-    'begin': '(\\w+)\\*?(:)'
-    'end': '(;)|(\\.)|(\\|)\\s+\\w+:'
-    'beginCaptures':
+    'match': '([\\w\'-]+)([\\*\\+]?)(:)'
+    'captures':
       '1':
         'name': 'variable.other.xle'
       '2':
-        'name': 'punctuation.definition.keyword.xle'
-    'endCaptures':
-      '1':
-        'name': 'punctuation.definition.keyword.xle'
-      '2':
-        'name': 'punctuation.definition.keyword.xle'
+        'name': 'string.regexp.xle'
       '3':
         'name': 'punctuation.definition.keyword.xle'
     'patterns': [
-      {'include': '#comments'}
-      {'include': '#regex'}
+      {'include': '#body'}
     ]
 
   'f-structure-definitions':
@@ -241,6 +234,14 @@
       {
         'match': '[!^$]'
         'name': 'storage.type.xle'
+      }
+      {
+        'match': '(;)'
+        'name': 'punctuation.definition.keyword.xle'
+      }
+      {
+        'match': '=c'
+        'name': 'punctuation.definition.xle'
       }
       {
         'match': '(\\()\\s*([!^])[^\\s]+?(\\))(?:\\s*(=)\\s*[^\\s]+?)?'
@@ -271,7 +272,7 @@
 
   'macro_declaration':
 
-    'begin': '(.+?)\\s+?(=)'
+    'begin': '([^(-->)]+?)\\s+?(=)'
     'end': '(\\.)'
     'beginCaptures':
       '1':
@@ -282,6 +283,7 @@
       '1':
         'name': 'punctuation.definition.keyword.xle'
     'patterns': [
+      {'include': '#f-structure-section'}
       {'include': '#body'}
     ]
 
@@ -328,15 +330,13 @@
 
   'template_call':
 
-    'begin': '(@)(\\().+?'
-    'end': '(\\))'
-    'beginCaptures':
+    'match': '(@)(\\()?.+?(\\))?'
+    'captures':
       '1':
         'name': 'storage.type.xle'
       '2':
         'name': 'punctuation.definition.xle'
-    'endCaptures':
-      '1':
+      '3':
         'name': 'punctuation.definition.xle'
     'patterns': [
       {'include': '#stem_definition'}
@@ -354,8 +354,8 @@
         'name': 'punctuation.definition.keyword.xle'
     'contentName': 'meta.section.xle'
     'patterns': [
-      {'include': '#comments'}
       {'include': '#lexicon_entry'}
+      {'include': '#body'}
     ]
 
   'lexicon_entry':
@@ -401,6 +401,7 @@
       #{'include': '#optionality'}
       {'include': '#negation_scope'}
       {'include': '#negation'}
+      {'include': '#f-structure-section'}
       {'include': '#body'}
       ]
 

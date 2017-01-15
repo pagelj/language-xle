@@ -1,3 +1,11 @@
+## 0.0.4
+* Resolve bug with rules name
+* Fix bug in config section
+* Fix bug in macro declaration
+* Fix bug with template call
+* Fix bug with linebreak in config section
+* Add syntax highlighting for F-Structure sections
+
 ## 0.0.3
 * Extend the scope of F-Structure declarations and include the equal sign and the value
 * Include EPSILON, OPTIMALITYORDER and SEMANTICFUNCTIONS config entries
